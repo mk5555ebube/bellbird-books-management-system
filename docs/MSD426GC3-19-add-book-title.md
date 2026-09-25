@@ -1,4 +1,4 @@
-# MSD426GC3-19 — Add a book-title record
+# MSD426GC3-19 - Add a book-title record
 
 ## Summary
 
@@ -8,10 +8,10 @@ The page follows the approved Add Book wireframe and uses the shared Bellbird Bo
 
 ## Fields
 
-- Title — required
-- Author — required
-- ISBN — optional
-- Shop section — required
+- Title - required
+- Author - required
+- ISBN - optional
+- Shop section - required
 
 ## Validation
 
