@@ -1,13 +1,11 @@
 import { PageContainer } from "@/components/layout/page-container";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { AdjustmentForm } from "./adjustment-form";
 import { StockForm } from "./stock-form";
 
 export const metadata = {
   title: "New-book stock",
 };
-
-const inputClassName =
-  "mt-1 w-full rounded-md border border-stone-300 px-3 py-2";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -18,13 +16,13 @@ export default async function NewBookStockPage({ params }: PageProps) {
 
   //Load any current stock for this book
   const supabase = createSupabaseServerClient();
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("new_book_stock")
     .select("selling_price, quantity, minimum_stock_level")
     .eq("book_title_id", bookTitleId)
     .maybeSingle();
 
-  //Convert to String
+  
   const initialValues = {
     sellingPrice: data ? String(data.selling_price) : "",
     quantity: data ? String(data.quantity) : "",
@@ -43,7 +41,26 @@ export default async function NewBookStockPage({ params }: PageProps) {
         </p>
       </header>
 
-      <StockForm bookTitleId={bookTitleId} initialValues={initialValues} />
+      {error ? (
+        <p role="alert" className="max-w-lg text-red-700">
+          The stock details could not be loaded. Refresh the page and try again.
+        </p>
+      ) : (
+        <div className="space-y-8">
+          <StockForm bookTitleId={bookTitleId} initialValues={initialValues} />
+
+          {data ? (
+            <AdjustmentForm
+              bookTitleId={bookTitleId}
+              currentQuantity={data.quantity}
+            />
+          ) : (
+            <p className="max-w-lg text-stone-600">
+              Save the stock details above before adjusting the quantity.
+            </p>
+          )}
+        </div>
+      )}
     </PageContainer>
   );
 }

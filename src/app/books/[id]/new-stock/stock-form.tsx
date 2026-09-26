@@ -85,6 +85,7 @@ export function StockForm({
             max="2147483647"
             step="1"
             required
+            key={initialValues.quantity}
             defaultValue={initialValues.quantity}
             className={inputClassName}
           />
