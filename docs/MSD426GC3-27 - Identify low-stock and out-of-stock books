@@ -1,0 +1,42 @@
+# MSD426GC3-27 - Identify low-stock and out-of-stock books
+
+## Summary
+
+This feature shows staff a stock status for each new-book title, so they know at a glance which books are running low or have sold out. The status appears both on the book catalogue page (`/books`) and on the individual new-stock page (`/books/[id]/new-stock`).
+
+## Statuses
+
+- **In stock** - Quantity is above the minimum stock level. Shown with a green badge.
+- **Low stock** - Quantity is at or below the minimum stock level, but not zero. Shown with a yellow badge.
+- **Out of stock** - Quantity is zero. Shown with a red badge.
+- A negative quantity is rejected and never reaches this logic.
+
+## Data flow
+
+1. `getStockStatus(quantity, minimumStockLevel)` applies the three rules above and returns one of `in-stock`, `low-stock` or `out-of-stock`.
+2. `StockStatusBadge` renders the coloured label for a status, used where the quantity and minimum are already available.
+3. `StockStatusForBook` is used where only a book's ID is available (the catalogue). It looks up that book's own stock record and renders the badge, or nothing if the book has no stock record yet.
+4. The catalogue table has a new "Stock status" column, showing the badge for each row.
+
+## Files
+
+- `src/lib/stock-status.ts` - the status logic and display labels/colours.
+- `src/components/stock-status-badge.tsx` - `StockStatusBadge` and `StockStatusForBook`.
+- `src/app/books/[id]/new-stock/page.tsx` - modified to show the badge alongside the adjustment form.
+- `src/app/books/catalogue-table.tsx` - modified to add the Stock status column.
+
+## Security
+
+- Supabase access occurs through the server-side client.
+- No credentials or `.env.local` values are committed.
+
+## Testing completed
+
+- In stock badge shown correctly on the catalogue page
+- Low stock badge shown correctly (quantity equal to minimum, and quantity below minimum)
+- Out of stock badge shown correctly (quantity zero)
+- No badge shown, and no error, for a book with no stock record
+- Badge matches between the catalogue page and the new-stock page for each status
+- Status updates correctly as quantity is increased or decreased (in stock to low stock, low stock to out of stock, and back)
+- Cannot decrease an out-of-stock book's quantity below zero
+- Linting and production build

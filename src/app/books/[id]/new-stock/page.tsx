@@ -2,6 +2,7 @@ import { PageContainer } from "@/components/layout/page-container";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { AdjustmentForm } from "./adjustment-form";
 import { StockForm } from "./stock-form";
+import { StockStatusBadge } from "@/components/stock-status-badge";
 
 export const metadata = {
   title: "New-book stock",
@@ -50,10 +51,16 @@ export default async function NewBookStockPage({ params }: PageProps) {
           <StockForm bookTitleId={bookTitleId} initialValues={initialValues} />
 
           {data ? (
-            <AdjustmentForm
-              bookTitleId={bookTitleId}
-              currentQuantity={data.quantity}
-            />
+            <>
+              <StockStatusBadge
+                quantity={data.quantity}
+                minimumStockLevel={data.minimum_stock_level}
+              />
+              <AdjustmentForm
+                bookTitleId={bookTitleId}
+                currentQuantity={data.quantity}
+              />
+            </>
           ) : (
             <p className="max-w-lg text-stone-600">
               Save the stock details above before adjusting the quantity.
