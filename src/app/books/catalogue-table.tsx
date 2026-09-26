@@ -1,6 +1,7 @@
 import Link from "next/link";
-
 import type { BookTitleRow } from "./catalogue";
+//for stock status
+import { StockStatusForBook } from "@/components/stock-status-badge";
 
 type CatalogueTableProps = {
   books: BookTitleRow[];
@@ -38,6 +39,9 @@ export function CatalogueTable({
             <th scope="col" className="px-4 py-3 font-medium">
               Shop section
             </th>
+            <th scope="col" className="px-4 py-3 font-medium">
+              Stock Status
+            </th>
           </tr>
         </thead>
 
@@ -60,6 +64,9 @@ export function CatalogueTable({
               </td>
 
               <td className="px-4 py-3 text-stone-700">{book.section}</td>
+              <td className="px-4 py-3">
+                <StockStatusForBook bookTitleId={book.id} />
+              </td>
             </tr>
           ))}
         </tbody>
